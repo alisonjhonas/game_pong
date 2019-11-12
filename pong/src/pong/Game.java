@@ -25,15 +25,22 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public BufferedImage layer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	
 	List<Entity> entities;
-	Player player;
+	public static Player player;
+	public static Enemy enemy;
+	public static Ball ball;
 	
 	public Game() {
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		entities = new ArrayList<Entity>();
 		this.addKeyListener(this);
 		setFocusable(true);
-		player = new Player(100, HEIGHT-10 );
+		double centerWidth = 100d;
+		player = new Player(centerWidth, HEIGHT-5 );
+		enemy = new Enemy(centerWidth, 0);
+		ball = new Ball(centerWidth+20d, HEIGHT/2);
 		entities.add(player);
+		entities.add(enemy);
+		entities.add(ball);
 		
 	}
 	
@@ -51,9 +58,12 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	}
 	
 	public void tick() {
-		for(Entity entity : entities) {
-			entity.tick();
-		}
+//		for(Entity entity : entities) {
+//			entity.tick();
+//		}
+		player.tick();
+		ball.tick();
+		enemy.tick();
 	}
 	
 	public void render() {
@@ -65,9 +75,12 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		Graphics graphics = layer.getGraphics();
 		graphics.setColor(Color.BLACK);
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
-		for(Entity entity : entities) {
-			entity.render(graphics);
-		}
+//		for(Entity entity : entities) {
+//			entity.render(graphics);
+//		}
+		player.render(graphics);
+		ball.render(graphics);
+		enemy.render(graphics);
 		
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.drawImage(layer,0,0,WIDTH*SCALE, HEIGHT*SCALE, null);

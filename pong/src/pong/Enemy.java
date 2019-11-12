@@ -2,25 +2,20 @@ package pong;
 
 import java.awt.Color;
 
-public class Player extends Entity{
-	public boolean right, left;
+public class Enemy extends Entity {
 	
-	public Player(double x, double y){
+	public Enemy(double x, double y){
 		this.x = x;
 		this.y = y;
 		width = 40;
 		height = 5;
-		this.color = Color.BLUE;
+		this.color = Color.RED;
 	}
 	
 	@Override
 	public void tick() {
 		
-		if(right) {
-			x += 1;
-		}else if(left) {
-			x -= 1;
-		}
+		x += (Game.ball.x - x) * 0.07; 
 		if(x+width > Game.WIDTH) {
 			x = Game.WIDTH - width;
 		}
@@ -28,5 +23,5 @@ public class Player extends Entity{
 			x = 0;
 		}
 	}
-	
+
 }

@@ -1,10 +1,18 @@
 package pong;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
-public interface Entity {
+public abstract class Entity {
 	
-	public void tick();
+	public double x, y;
+	public int width, height;
+	public Color color;
 	
-	public void render(Graphics graphics);
+	public abstract void tick();
+	
+	public void render(Graphics graphics) {
+		graphics.setColor(color);
+		graphics.fillRect((int)x, (int)y, width, height);
+	}
 }
