@@ -1,14 +1,18 @@
 package pong;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
+
 
 public class Game extends Canvas implements Runnable, KeyListener{
 
@@ -20,12 +24,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public BufferedImage layer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	
+	List<Entity> entities;
 	Player player;
 	
 	public Game() {
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		entities = new ArrayList<Entity>();
 		this.addKeyListener(this);
+		setFocusable(true);
 		player = new Player(100, HEIGHT-10 );
+		entities.add(player);
 		
 	}
 	
@@ -38,12 +46,14 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
+
 		new Thread(game).start();
 	}
 	
 	public void tick() {
-		player.tick();
+		for(Entity entity : entities) {
+			entity.tick();
+		}
 	}
 	
 	public void render() {
@@ -53,7 +63,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			return;
 		}
 		Graphics graphics = layer.getGraphics();
-		player.render(graphics);
+		graphics.setColor(Color.BLACK);
+		graphics.fillRect(0, 0, WIDTH, HEIGHT);
+		for(Entity entity : entities) {
+			entity.render(graphics);
+		}
 		
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.drawImage(layer,0,0,WIDTH*SCALE, HEIGHT*SCALE, null);
@@ -70,7 +84,6 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			try {
 				Thread.sleep(1000/60);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}	
@@ -78,12 +91,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			System.out.println("Right");
 			player.right = true;
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			System.out.println("Left");
 			player.left = true;
 		}
 		
@@ -91,7 +101,6 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			player.right = false;
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
@@ -101,10 +110,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		System.out.println(e.getKeyCode());
-		// TODO Auto-generated method stub
-		
+	public void keyTyped(KeyEvent e) {		
 	}
 
 }
